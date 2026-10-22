@@ -1,0 +1,45 @@
+# Virtual Environment
+.venv/
+env/
+venv/
+ENV/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node & Frontend
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# Security & Secrets (Plaintext secrets ignored; encrypted .env.enc is kept)
+.env
+backend/.env
+.vault_key
+backend/.vault_key
+*.pem
+*.key
+
+# OS & Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+
+# Temporary Scratch Scripts
+powershell.cmd
+test_*.py
+write_*.py
+
+# Large Pre-trained AI Model Weights (>100MB, fetched on demand by Hugging Face)
+*.safetensors
+*.bin
+*.pt
+*.onnx
+ai/configuration/weights/
