@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALSKINCARE AI — Clinical Dermatology & Intelligent Skincare</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Playfair Display"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+          },
+          colors: {
+            dermo: {
+              cream: '#FAF8F5',
+              sand: '#F4EFEA',
+              warm: '#EAE2D8',
+              accent: '#8D7B68',
+              sage: '#607274',
+              sageLight: '#E8ECE9',
+              teal: '#2D4B46',
+              tealDark: '#1E3531',
+              charcoal: '#1A1D1C',
+              gold: '#C5A880',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    @keyframes laserScan {
+      0% { top: 0%; opacity: 0.2; }
+      15% { opacity: 0.9; }
+      85% { opacity: 0.9; }
+      100% { top: 100%; opacity: 0.2; }
+    }
+    .animate-laser-scan {
+      animation: laserScan 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.7; }
+      50% { transform: scale(1.18); opacity: 0.35; }
+    }
+    .animate-pulse-glow {
+      animation: pulseGlow 2.5s ease-in-out infinite;
+    }
+    @keyframes radarSpin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-radar {
+      animation: radarSpin 8s linear infinite;
+    }
+    @keyframes radarSpinReverse {
+      from { transform: rotate(360deg); }
+      to { transform: rotate(0deg); }
+    }
+    .animate-radar-reverse {
+      animation: radarSpinReverse 11s linear infinite;
+    }
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .animate-shimmer {
+      background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.45) 50%, rgba(255,255,255,0) 100%);
+      background-size: 200% 100%;
+      animation: shimmer 3s infinite;
+    }
+    @keyframes floatGently {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-4px); }
+    }
+    .animate-float {
+      animation: floatGently 3.5s ease-in-out infinite;
+    }
+    @keyframes glowBreathing {
+      0%, 100% { opacity: 0.4; filter: drop-shadow(0 0 6px rgba(197, 168, 128, 0.4)); }
+      50% { opacity: 0.85; filter: drop-shadow(0 0 16px rgba(197, 168, 128, 0.8)); }
+    }
+    .animate-glow-breathing {
+      animation: glowBreathing 2.6s ease-in-out infinite;
+    }
+    @keyframes scanTargetRing {
+      0% { transform: scale(0.9); opacity: 0.85; }
+      50% { transform: scale(1.45); opacity: 0.25; }
+      100% { transform: scale(1.9); opacity: 0; }
+    }
+    .animate-target-ring {
+      animation: scanTargetRing 2s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+    }
+
+    /* Print Formatting Engine for Clinical Reports & Prescriptions */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 12mm 14mm;
+      }
+      header, footer, nav, .no-print, [data-chatbot], [title="Log Out"], button {
+        display: none !important;
+      }
+      body {
+        background: #ffffff !important;
+        color: #111827 !important;
+        font-size: 10.5pt !important;
+        line-height: 1.45 !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+      }
+      .fixed {
+        position: static !important;
+        inset: auto !important;
+        background: transparent !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        backdrop-filter: none !important;
+        z-index: auto !important;
+      }
+      .max-h-\[92vh\], .overflow-y-auto {
+        max-height: none !important;
+        overflow: visible !important;
+        height: auto !important;
+      }
+      .print-avoid-break {
+        break-inside: avoid !important;
+        page-break-inside: avoid !important;
+      }
+      .shadow-2xl, .shadow-xl, .shadow-lg, .shadow-md, .shadow-sm, .shadow-xs, .shadow-2xs {
+        box-shadow: none !important;
+      }
+      .print-border {
+        border: 1px solid #d1d5db !important;
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-CmJW0bSd.js"></script>
+</head>
+<body class="bg-dermo-cream text-dermo-charcoal font-sans antialiased selection:bg-dermo-teal selection:text-white min-h-screen">
+  <div id="root"></div>
+</body>
+</html>
