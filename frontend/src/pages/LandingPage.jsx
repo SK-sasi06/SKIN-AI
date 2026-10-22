@@ -97,7 +97,11 @@ export default function LandingPage({ onNavigate }) {
               {/* Model Image */}
               <div className="relative rounded-2xl overflow-hidden aspect-[4/5] bg-dermo-sand">
                 <img
-                  src="/images/hero-skincare-model.jpg"
+                  src={`${import.meta.env.BASE_URL}images/hero-skincare-model.jpg`}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=800&q=80";
+                  }}
                   alt="Radiant skincare model portrait"
                   className="w-full h-full object-cover object-center transform hover:scale-[1.02] transition-transform duration-700"
                 />

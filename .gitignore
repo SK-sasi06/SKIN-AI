@@ -43,3 +43,8 @@ write_*.py
 *.pt
 *.onnx
 ai/configuration/weights/
+
+# Temporary Uploads
+backend/uploads/*.jpg
+backend/uploads/*.png
+backend/uploads/*.jpeg

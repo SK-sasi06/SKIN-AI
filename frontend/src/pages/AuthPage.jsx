@@ -82,29 +82,18 @@ export default function AuthPage({ onNavigate }) {
         setSuccess('Account created successfully! Redirecting to your personal skin dashboard...');
         setTimeout(() => onNavigate('analyze'), 1200);
       } else if (mode === 'forgot') {
-        if (forgotStep === 1) {
-          // Request reset code
-          const res = await forgotPassword(email);
-          setForgotStep(2);
-          setSuccess(res.message || 'Verification code dispatched. Check below to complete reset.');
-          if (res.reset_code) {
-            setGeneratedCodeHint(res.reset_code);
-            setResetCode(res.reset_code);
-          }
-        } else {
-          // Submit reset code and new password
-          if (newPassword.length < 6) {
-            throw new Error('New password must be at least 6 characters.');
-          }
-          if (newPassword !== confirmPassword) {
-            throw new Error('New password and confirmation do not match.');
-          }
-          const data = await resetPassword(email, resetCode, newPassword);
-          setAuthToken(data.access_token);
-          setCurrentUser(data.user);
-          setSuccess('Password reset successfully! Logging you in...');
-          setTimeout(() => onNavigate('analyze'), 1200);
+        // Direct reset without email code verification
+        if (newPassword.length < 6) {
+          throw new Error('New password must be at least 6 characters.');
         }
+        if (newPassword !== confirmPassword) {
+          throw new Error('New password and confirmation do not match.');
+        }
+        const data = await resetPassword(email, null, newPassword);
+        setAuthToken(data.access_token);
+        setCurrentUser(data.user);
+        setSuccess('Password updated successfully! Logging you in...');
+        setTimeout(() => onNavigate('analyze'), 1200);
       } else if (mode === 'change') {
         // Direct change password
         if (newPassword.length < 6) {
@@ -119,7 +108,7 @@ export default function AuthPage({ onNavigate }) {
         setCurrentPassword('');
         setNewPassword('');
         setConfirmPassword('');
-        setTimeout(() => switchMode('login'), 1800);
+        setTimeout(() => switchMode('login'), 1600);
       }
     } catch (err) {
       setError(err.message || 'Authentication operation failed.');
@@ -151,10 +140,8 @@ export default function AuthPage({ onNavigate }) {
           <p className="text-xs text-stone-500 max-w-sm mx-auto">
             {mode === 'login' && 'Access past Vision Transformer scans, SkinKart 3D try-on, and personalized routines.'}
             {mode === 'register' && 'Join ALSKINCARE AI to track your dermal barrier journey and product formulation matches.'}
-            {mode === 'forgot' && (forgotStep === 1
-              ? 'Enter your registered email address to receive a secure 6-digit recovery code.'
-              : 'Enter the 6-digit code and choose a secure new password for your account.')}
-            {mode === 'change' && 'Verify your existing credentials and set a new secure password.'}
+            {mode === 'forgot' && 'Enter your username or email address and choose your new password to reset directly.'}
+            {mode === 'change' && 'Enter your username or email and choose your new secure password.'}
           </p>
         </div>
 
@@ -217,23 +204,7 @@ export default function AuthPage({ onNavigate }) {
         {success && (
           <div className="p-3.5 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-800 flex items-start gap-2.5">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
-            <div className="space-y-1">
-              <span className="leading-snug block">{success}</span>
-              {generatedCodeHint && mode === 'forgot' && forgotStep === 2 && (
-                <div className="pt-1 flex items-center gap-2">
-                  <span className="text-[11px] font-mono font-bold bg-emerald-100 text-emerald-900 px-2 py-0.5 rounded border border-emerald-300">
-                    Code: {generatedCodeHint}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => setResetCode(generatedCodeHint)}
-                    className="text-[11px] text-emerald-900 font-bold underline"
-                  >
-                    Auto-Fill Code
-                  </button>
-                </div>
-              )}
-            </div>
+            <span className="leading-snug block">{success}</span>
           </div>
         )}
 
@@ -246,7 +217,7 @@ export default function AuthPage({ onNavigate }) {
           {mode === 'register' && (
             <div>
               <label className="block text-xs font-bold text-dermo-accent uppercase tracking-wider mb-1.5">
-                Full Name
+                Full Name / Username
               </label>
               <div className="relative">
                 <User className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
@@ -255,26 +226,26 @@ export default function AuthPage({ onNavigate }) {
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
-                  placeholder="Jane Doe"
+                  placeholder="e.g. Arun or Jane Doe"
                   className="w-full bg-dermo-cream border border-dermo-warm text-dermo-charcoal rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-dermo-teal transition-all"
                 />
               </div>
             </div>
           )}
 
-          {/* Email Address (All modes) */}
+          {/* Username or Email Address (All modes) */}
           <div>
             <label className="block text-xs font-bold text-dermo-accent uppercase tracking-wider mb-1.5">
-              Email Address
+              {mode === 'register' ? 'Email Address' : 'Username or Email'}
             </label>
             <div className="relative">
               <Mail className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
               <input
-                type="email"
+                type={mode === 'register' ? 'email' : 'text'}
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="member@alskincare.ai"
+                placeholder={mode === 'register' ? 'member@alskincare.ai' : 'e.g. arun1111 or member@alskincare.ai'}
                 className="w-full bg-dermo-cream border border-dermo-warm text-dermo-charcoal rounded-xl pl-10 pr-4 py-3 text-sm focus:outline-none focus:border-dermo-teal transition-all"
               />
             </div>
@@ -318,17 +289,16 @@ export default function AuthPage({ onNavigate }) {
             </div>
           )}
 
-          {/* Current Password (Change Password mode) */}
+          {/* Current Password (Change Password mode - optional) */}
           {mode === 'change' && (
             <div>
               <label className="block text-xs font-bold text-dermo-accent uppercase tracking-wider mb-1.5">
-                Current Password
+                Current Password <span className="text-stone-400 font-normal lowercase">(optional if logged in)</span>
               </label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
                 <input
                   type={showCurrentPassword ? 'text' : 'password'}
-                  required
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
                   placeholder="Existing password"
@@ -345,29 +315,8 @@ export default function AuthPage({ onNavigate }) {
             </div>
           )}
 
-          {/* 6-Digit Reset Code (Forgot Password Step 2) */}
-          {mode === 'forgot' && forgotStep === 2 && (
-            <div>
-              <label className="block text-xs font-bold text-dermo-accent uppercase tracking-wider mb-1.5">
-                6-Digit Recovery Code
-              </label>
-              <div className="relative">
-                <KeyRound className="w-4 h-4 text-stone-400 absolute left-3.5 top-3.5" />
-                <input
-                  type="text"
-                  required
-                  maxLength={6}
-                  value={resetCode}
-                  onChange={(e) => setResetCode(e.target.value)}
-                  placeholder="123456"
-                  className="w-full bg-dermo-cream border border-dermo-warm text-dermo-charcoal font-mono tracking-widest text-base rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:border-dermo-teal transition-all"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* New Password & Confirm Password (Forgot Step 2 OR Change Password) */}
-          {((mode === 'forgot' && forgotStep === 2) || mode === 'change') && (
+          {/* New Password & Confirm Password (Forgot OR Change Password) */}
+          {(mode === 'forgot' || mode === 'change') && (
             <>
               <div>
                 <label className="block text-xs font-bold text-dermo-accent uppercase tracking-wider mb-1.5">
@@ -434,17 +383,10 @@ export default function AuthPage({ onNavigate }) {
                 Create Free Account
               </>
             ) : mode === 'forgot' ? (
-              forgotStep === 1 ? (
-                <>
-                  <KeyRound className="w-4 h-4" />
-                  Send Recovery Code
-                </>
-              ) : (
-                <>
-                  <Check className="w-4 h-4" />
-                  Set New Password & Sign In
-                </>
-              )
+              <>
+                <Check className="w-4 h-4" />
+                Reset Password & Sign In
+              </>
             ) : (
               <>
                 <KeyRound className="w-4 h-4" />
